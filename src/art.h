@@ -160,6 +160,16 @@ void* art_delete(art_tree *t, const unsigned char *key, int key_len);
 void* art_search(const art_tree *t, const unsigned char *key, int key_len);
 
 /**
+ * Searches for a value in the ART tree
+ * @arg t The tree
+ * @arg key The key
+ * @arg key_len The length of the key
+ * @return NULL if the item was not found, otherwise
+ * the value pointer is returned.
+ */
+art_leaf* art_search_node(const art_tree *t, const unsigned char *key, int key_len);
+
+/**
  * Returns the minimum valued leaf
  * @return The minimum leaf or NULL
  */

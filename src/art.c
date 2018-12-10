@@ -290,6 +290,47 @@ void* art_search(const art_tree *t, const unsigned char *key, int key_len) {
     return NULL;
 }
 
+/**
+ * Searches for a value in the ART tree
+ * @arg t The tree
+ * @arg key The key
+ * @arg key_len The length of the key
+ * @return NULL if the item was not found, otherwise
+ * the leaf node is returned.
+ */
+art_leaf* art_search_node(const art_tree *t, const unsigned char *key, int key_len) {
+    art_node **child;
+    art_node *n = t->root;
+    int prefix_len, depth = 0;
+    while (n) {
+        // Might be a leaf
+        if (IS_LEAF(n)) {
+            n = (art_node*)LEAF_RAW(n);
+            // Check if the expanded path matches
+            if (!leaf_matches((art_leaf*)n, key, key_len, depth)) {
+                return (art_leaf*) n;
+            }
+            return NULL;
+        }
+
+        // Bail if the prefix does not match
+        if (n->partial_len) {
+            prefix_len = check_prefix(n, key, key_len, depth);
+            if (prefix_len != min(MAX_PREFIX_LEN, n->partial_len))
+                return NULL;
+            depth = depth + n->partial_len;
+        }
+
+        // Recursively search
+        child = find_child(n, key[depth]);
+        n = (child) ? *child : NULL;
+        depth++;
+    }
+    return NULL;
+}
+
+
+
 // Find the minimum leaf under a node
 static art_leaf* minimum(const art_node *n) {
     // Handle base cases
