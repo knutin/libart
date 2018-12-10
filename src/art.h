@@ -165,7 +165,7 @@ void* art_search(const art_tree *t, const unsigned char *key, int key_len);
  * @arg key The key
  * @arg key_len The length of the key
  * @return NULL if the item was not found, otherwise
- * the value pointer is returned.
+ * the leaf node is returned.
  */
 art_leaf* art_search_node(const art_tree *t, const unsigned char *key, int key_len);
 
